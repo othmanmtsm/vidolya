@@ -8,6 +8,8 @@ var indexRouter = require('./routes/index');
 
 
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,6 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((req,res,next)=>{
+  res.io=io;
+  next();
+})
 
 app.use('/', indexRouter);
 
@@ -37,4 +43,16 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+io.on('connection', function(socket){
+  socket.on('buffering',(data)=>{
+    io.emit('buffering',data);
+  });
+  socket.on('pause',(data)=>{
+    io.emit('pause',data);
+  });
+  socket.on('play',(data)=>{
+    io.emit('play',data);
+  });
+});
+
+module.exports = {app:app,server:server};

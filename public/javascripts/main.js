@@ -1,4 +1,5 @@
-// 2. This code loads the IFrame Player API code asynchronously.
+var socket = io();
+
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -11,9 +12,6 @@ player = new YT.Player('player', {
     height: '390',
     width: '640',
     videoId: 'M7lc1UVf-VE',
-    playerVars:{
-        'controls':0
-    },
     events: {
     'onReady': onPlayerReady,
     'onStateChange': onPlayerStateChange
@@ -26,9 +24,20 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-    
+    if (event.target.getPlayerState() == 3){
+        socket.emit('buffering',player.getCurrentTime());
+    }else if (event.target.getPlayerState() == 2) {
+        socket.emit('pause',player.getCurrentTime());
+    }else if (event.target.getPlayerState() == 1) {
+        socket.emit('play',player.getCurrentTime());
+    }
 }
-
-
-  
-  
+socket.on('buffering',(d)=>{
+    player.seekTo(d);
+})
+socket.on('pause',()=>{
+    player.pauseVideo();
+})
+socket.on('play',()=>{
+    player.playVideo();
+})
