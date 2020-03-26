@@ -43,16 +43,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-io.on('connection', function(socket){
-  socket.on('buffering',(data)=>{
-    io.emit('buffering',data);
-  });
-  socket.on('pause',(data)=>{
-    io.emit('pause',data);
-  });
-  socket.on('play',(data)=>{
-    io.emit('play',data);
-  });
-});
-
 module.exports = {app:app,server:server};

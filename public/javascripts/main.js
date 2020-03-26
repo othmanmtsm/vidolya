@@ -1,5 +1,7 @@
 var socket = io();
 
+let tim = document.getElementById('vtime');
+
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -12,6 +14,15 @@ player = new YT.Player('player', {
     height: '390',
     width: '640',
     videoId: 'M7lc1UVf-VE',
+    playerVars:{
+        controls: 0,
+        autoplay: 1,
+        disablekb: 1,
+        enablejsapi: 1,
+        modestbranding: 1,
+        start: 0,
+        showinfo: 0
+    },
     events: {
     'onReady': onPlayerReady,
     'onStateChange': onPlayerStateChange
@@ -19,25 +30,61 @@ player = new YT.Player('player', {
 });
 }
 
-function onPlayerReady(event) {
 
+
+function onPlayerReady(event) {
+    // if (playing) {
+    //     player.seekTo(playingT);
+    //     player.playVideo();
+    // }else{
+    //     playing = true;
+    // }
 }
 
 function onPlayerStateChange(event) {
-    if (event.target.getPlayerState() == 3){
-        socket.emit('buffering',player.getCurrentTime());
-    }else if (event.target.getPlayerState() == 2) {
+
+}
+
+//player
+let btn = document.getElementById('play-pause');
+let bar = document.querySelector('.progressbar');
+let fill = document.querySelector('.progress-f');
+btn.addEventListener('click',()=>{
+    if (player.getPlayerState() == 1) {
+        btn.className = 'play';
         socket.emit('pause',player.getCurrentTime());
-    }else if (event.target.getPlayerState() == 1) {
+    }else if (player.getPlayerState() == 2) {
+        btn.className = 'pause';
         socket.emit('play',player.getCurrentTime());
     }
-}
+})
+
+
+window.setInterval(function(){
+    let curTime = player.getCurrentTime() / player.getDuration();
+    fill.style.width = curTime * 100 + '%';
+    socket.emit('start',player.getCurrentTime());
+}, 1000);
+
+bar.addEventListener('click',(e)=>{
+    socket.emit('skip',{bclient:e.target.getBoundingClientRect(),clientX:e.clientX});
+})
+
 socket.on('buffering',(d)=>{
     player.seekTo(d);
+    player.playVideo();
 })
 socket.on('pause',()=>{
     player.pauseVideo();
 })
 socket.on('play',()=>{
     player.playVideo();
+})
+socket.on('skip',(e)=>{
+    let rect = e.bclient;
+    let x = e.clientX - rect.left;
+    let curTime = x/640;
+    let vidTime = curTime * player.getDuration();
+    player.seekTo(vidTime);
+    fill.style.width = curTime * 100 + '%';
 })

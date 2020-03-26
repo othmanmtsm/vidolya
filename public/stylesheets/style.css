@@ -1,8 +1,64 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.v-container{
+  overflow: hidden;
 }
 
-a {
-  color: #00B7FF;
+.v-container:hover .controls{
+  transform: translateY(0);
+}
+
+.controls{
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  width: 640px;
+  flex-wrap: wrap;
+  background: #282828;
+  transform: translateY(100%) translateY(-13%);
+  transition: all .2s;
+}
+
+.buttons button{
+  background: none;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+}
+
+.buttons button:before{
+  content: '\f28b';
+  font-family: 'Font Awesome 5 Free';
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  font-size: 28px;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.buttons button.play:before{
+  content: '\f144';
+}
+
+.buttons button.pause:before{
+  content: '\f28b';
+}
+
+.progressbar{
+  height: 10px;
+  top: 0;
+  left: 0;
+  width: 640px;
+  background-color: #000;
+  cursor: pointer;
+}
+
+.progress-f{
+  height: 10px;
+  width: 100px;
+  background-color: orangered;
+  transition: width .3s linear
+}
+
+#player{
+  pointer-events: none;
 }
