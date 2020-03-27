@@ -1,34 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vid demo</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-7 mx-auto v-container">
-                <div id="player"></div>
-                <div class="controls">
-                    <div class="progressbar">
-                        <div class="progress-f"></div>
-                    </div>
-                    <div class="buttons">
-                        <button id="play-pause"></button>
-                    </div>
-                </div>
-                <input type="hidden" id="vtime">
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <h1>Welcome to my website</h1>
+            <input class="form-control" type="text" id="user" placeholder="Enter a username">
+            <button id="create-r" class="btn btn-primary">Create room</button>
         </div>
     </div>
-    
-</body>
-<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
-<script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/javascripts/main.js"></script>
-</html>
+</div>
+<script>
+    let uname = document.getElementById('user');
+    let crt = document.getElementById('create-r');
+    crt.addEventListener('click',()=>{
+        let roomId = uname.value+Date.now();
+        window.location = `/room/${roomId}`;
+    })
+</script>
